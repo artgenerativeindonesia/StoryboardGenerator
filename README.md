@@ -24,9 +24,13 @@
 | Export | jsPDF + JSZip |
 | State | Zustand + TanStack Query |
 
-## Cara Setup (Development)
+## Cara Setup
 
-### 1. Clone & Install
+### Panduan Lengkap (untuk pemula)
+
+Baca **[SETUP.md](./SETUP.md)** — panduan step-by-step lengkap dalam bahasa Indonesia, mulai dari install Node.js sampai deploy ke Vercel. Tidak perlu bisa coding.
+
+### Quick Start (untuk developer)
 
 ```bash
 git clone <repo-url>
@@ -34,31 +38,7 @@ cd StoryboardGenerator
 npm install
 ```
 
-### 2. Setup Supabase
-
-1. Buat project baru di [supabase.com](https://supabase.com)
-2. Buka **SQL Editor**, jalankan kedua file migrasi secara urut:
-
-```
-supabase/migrations/001_initial_schema.sql   ← jalankan ini dulu
-supabase/migrations/002_storage_buckets.sql  ← lalu ini
-```
-
-3. Pergi ke **Authentication > Providers > Google**
-   - Aktifkan Google provider
-   - Masukkan Google OAuth Client ID & Secret dari [Google Cloud Console](https://console.cloud.google.com)
-
-4. Di **Authentication > URL Configuration**:
-   - Site URL: `http://localhost:3000`
-   - Redirect URLs: `http://localhost:3000/api/auth/callback`
-
-### 3. Konfigurasi Environment Variables
-
-```bash
-cp .env.example .env.local
-```
-
-Edit `.env.local`:
+Buat `.env.local`:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
@@ -67,23 +47,19 @@ SUPABASE_SERVICE_ROLE_KEY=eyJ...
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-### 4. Jalankan Development Server
+Jalankan migrasi SQL di Supabase SQL Editor:
+```
+supabase/migrations/001_initial_schema.sql
+supabase/migrations/002_storage_buckets.sql
+```
+
+Aktifkan Google OAuth di Supabase → Authentication → Providers, lalu:
 
 ```bash
 npm run dev
 ```
 
-Buka [http://localhost:3000](http://localhost:3000) — login dengan Google.
-
-### 5. Setup API Keys di Aplikasi
-
-Setelah login, pergi ke **Settings** (ikon gear di sidebar):
-
-- Masukkan **OpenRouter API Key** dan pilih model LLM
-- Pilih **Image Provider** + masukkan API key-nya
-- Klik **Save Settings**
-
-Selesai! Sekarang bisa mulai buat project dan generate storyboard.
+Buka [http://localhost:3000](http://localhost:3000) — login dengan Google, masukkan API keys di Settings.
 
 ---
 
