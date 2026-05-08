@@ -1,0 +1,60 @@
+import { createClient } from '@/lib/supabase/server'
+import { NextResponse } from 'next/server'
+import { generateShotlistPDF } from '@/lib/export/shotlistPDF'
+
+// POST /api/sessions/[sessionId]/export/shotlist-pdf
+export async function POST(
+  _request: Request,
+  { params }: { params: { sessionId: string } }
+) {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+    // Fetch session + project name
+    const { data: session } = await supabase
+      .from('generation_sessions')
+      .select('id, name, project_id')
+      .eq('id', params.sessionId)
+      .eq('user_id', user.id)
+      .single()
+    if (!session) return NextResponse.json({ error: 'Session not found' }, { status: 404 })
+
+    const { data: project } = await supabase
+      .from('projects')
+      .select('name')
+      .eq('id', session.project_id)
+      .single()
+
+    // Fetch all shotlist rows
+    const { data: rows, error: rowsError } = await supabase
+      .from('shotlist_rows')
+      .select('*')
+      .eq('session_id', params.sessionId)
+      .eq('user_id', user.id)
+      .order('row_order', { ascending: true })
+
+    if (rowsError) return NextResponse.json({ error: rowsError.message }, { status: 500 })
+    if (!rows?.length) return NextResponse.json({ error: 'No shotlist rows found' }, { status: 404 })
+
+    const pdfBuffer = await generateShotlistPDF({
+      rows,
+      projectName: project?.name ?? 'Project',
+      sessionName: session.name,
+    })
+
+    const safeFileName = session.name.replace(/[^a-zA-Z0-9_-]/g, '_')
+    return new Response(new Uint8Array(pdfBuffer), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${safeFileName}_shotlist.pdf"`,
+        'Content-Length': String(pdfBuffer.byteLength),
+      },
+    })
+  } catch (err) {
+    console.error('[POST export/shotlist-pdf]', err)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
