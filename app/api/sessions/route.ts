@@ -11,18 +11,18 @@ export async function POST(request: Request) {
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const body = await request.json()
-    const { projectId, name, instructions, selectedFileIds } = body ?? {}
+    const { project_id, name, instructions, selected_file_ids } = body ?? {}
 
     // Validate required fields
-    if (!projectId || typeof projectId !== 'string' || projectId.trim().length === 0) {
-      return NextResponse.json({ error: 'projectId is required' }, { status: 400 })
+    if (!project_id || typeof project_id !== 'string' || project_id.trim().length === 0) {
+      return NextResponse.json({ error: 'project_id is required' }, { status: 400 })
     }
 
     // Verify the project belongs to this user
     const { data: project, error: projectError } = await supabase
       .from('projects')
       .select('id')
-      .eq('id', projectId.trim())
+      .eq('id', project_id.trim())
       .eq('user_id', user.id)
       .single()
 
@@ -39,14 +39,14 @@ export async function POST(request: Request) {
       ? instructions.trim()
       : null
 
-    const fileIds = Array.isArray(selectedFileIds)
-      ? selectedFileIds.filter((id): id is string => typeof id === 'string')
+    const fileIds = Array.isArray(selected_file_ids)
+      ? selected_file_ids.filter((id): id is string => typeof id === 'string')
       : []
 
     const { data: session, error } = await supabase
       .from('generation_sessions')
       .insert({
-        project_id: projectId.trim(),
+        project_id: project_id.trim(),
         user_id: user.id,
         name: sessionName,
         instructions: sessionInstructions,

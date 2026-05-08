@@ -36,7 +36,7 @@ async function saveSettings(
   input: UpdateSettingsRequest
 ): Promise<UserSettings> {
   const res = await fetch('/api/settings', {
-    method: 'PATCH',
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
   })

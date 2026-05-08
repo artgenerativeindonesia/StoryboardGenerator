@@ -44,7 +44,7 @@ async function fetchScript(sessionId: string): Promise<Script> {
 async function saveScript(input: UpdateScriptInput): Promise<Script> {
   const { sessionId, content } = input
   const res = await fetch(`/api/sessions/${sessionId}/script`, {
-    method: 'PUT',
+    method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ content }),
   })
