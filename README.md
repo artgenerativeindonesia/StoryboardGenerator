@@ -24,6 +24,13 @@
 | Export | jsPDF + JSZip |
 | State | Zustand + TanStack Query |
 
+## Dokumentasi
+
+| Panduan | Isi |
+|---------|-----|
+| **[SETUP.md](./SETUP.md)** | Cara setup dari nol — install Node.js, Supabase, deploy ke Vercel. Untuk pemula, tidak perlu bisa coding. |
+| **[USAGE.md](./USAGE.md)** | Cara pakai web app — login, buat project, upload file, generate script, shotlist, gambar, export. Lengkap step by step. |
+
 ## Cara Setup
 
 ### Panduan Lengkap (untuk pemula)
