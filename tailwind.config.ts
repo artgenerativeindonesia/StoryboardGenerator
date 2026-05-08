@@ -1,0 +1,96 @@
+import type { Config } from 'tailwindcss'
+
+const config: Config = {
+  darkMode: ['class'],
+  content: [
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+  ],
+  theme: {
+    container: {
+      center: true,
+      padding: '2rem',
+      screens: { '2xl': '1400px' },
+    },
+    extend: {
+      colors: {
+        background: '#0A0A0A',
+        foreground: '#FAFAFA',
+        surface: '#1A1A1A',
+        'surface-elevated': '#242424',
+        border: '#2A2A2A',
+        'border-subtle': '#1F1F1F',
+        muted: {
+          DEFAULT: '#1A1A1A',
+          foreground: '#6B7280',
+        },
+        accent: {
+          DEFAULT: '#7C3AED',
+          foreground: '#FAFAFA',
+          blue: '#2563EB',
+          subtle: '#1E1033',
+        },
+        destructive: {
+          DEFAULT: '#EF4444',
+          foreground: '#FAFAFA',
+        },
+        card: {
+          DEFAULT: '#1A1A1A',
+          foreground: '#FAFAFA',
+        },
+        popover: {
+          DEFAULT: '#1A1A1A',
+          foreground: '#FAFAFA',
+        },
+        primary: {
+          DEFAULT: '#7C3AED',
+          foreground: '#FAFAFA',
+        },
+        secondary: {
+          DEFAULT: '#242424',
+          foreground: '#FAFAFA',
+        },
+        input: '#2A2A2A',
+        ring: '#7C3AED',
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+      },
+      fontFamily: {
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
+      },
+      keyframes: {
+        'accordion-down': {
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
+        },
+        'fade-in': {
+          from: { opacity: '0', transform: 'translateY(8px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
+        'fade-in': 'fade-in 0.3s ease-out',
+        shimmer: 'shimmer 2s linear infinite',
+      },
+    },
+  },
+  plugins: [require('tailwindcss-animate')],
+}
+
+export default config
