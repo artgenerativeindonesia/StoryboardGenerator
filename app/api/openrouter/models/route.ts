@@ -35,42 +35,53 @@ interface OpenRouterRawModel {
 
 // GET /api/openrouter/models
 // Returns the list of text-capable models available via the user's OpenRouter account.
-// Results are cached in-memory for 5 minutes.
+// Accepts optional ?apiKey=... query param to test a key before saving it to DB.
+// Results are cached in-memory for 5 minutes (per key).
 export async function GET(request: Request) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    // Fetch user's OpenRouter API key from settings
-    const { data: settings, error: settingsError } = await supabase
-      .from('user_settings')
-      .select('openrouter_api_key')
-      .eq('user_id', user.id)
-      .maybeSingle()
+    // Support an explicit apiKey query param (for testing before save)
+    const { searchParams } = new URL(request.url)
+    const queryApiKey = searchParams.get('apiKey')
 
-    if (settingsError) {
-      console.error('[GET /api/openrouter/models] settings error', settingsError)
-      return NextResponse.json({ error: settingsError.message }, { status: 500 })
+    let apiKey: string | null = queryApiKey
+
+    if (!apiKey) {
+      // Fall back to the saved key from user_settings
+      const { data: settings, error: settingsError } = await supabase
+        .from('user_settings')
+        .select('openrouter_api_key')
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      if (settingsError) {
+        console.error('[GET /api/openrouter/models] settings error', settingsError)
+        return NextResponse.json({ error: settingsError.message }, { status: 500 })
+      }
+
+      apiKey = settings?.openrouter_api_key ?? null
     }
 
-    if (!settings?.openrouter_api_key) {
+    if (!apiKey) {
       return NextResponse.json(
         { error: 'OpenRouter API key not configured in settings' },
         { status: 422 }
       )
     }
 
-    // Return from cache if still fresh
+    // Return from cache if still fresh (only cache DB-saved key results, not ephemeral test keys)
     const now = Date.now()
-    if (cachedModels && now - cacheTimestamp < CACHE_TTL_MS) {
+    if (!queryApiKey && cachedModels && now - cacheTimestamp < CACHE_TTL_MS) {
       return NextResponse.json({ data: cachedModels, error: null })
     }
 
     // Fetch from OpenRouter
     const response = await fetch(OPENROUTER_MODELS_URL, {
       headers: {
-        Authorization: `Bearer ${settings.openrouter_api_key}`,
+        Authorization: `Bearer ${apiKey}`,
         'HTTP-Referer': 'https://storyboardgenerator.app',
         'X-Title': 'StoryboardGenerator',
       },

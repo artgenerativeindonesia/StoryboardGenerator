@@ -24,15 +24,18 @@ export interface OpenRouterModel {
 
 export const openRouterKeys = {
   all: ['openrouter'] as const,
-  models: () => [...openRouterKeys.all, 'models'] as const,
+  models: (apiKey?: string) => [...openRouterKeys.all, 'models', apiKey ?? ''] as const,
 }
 
 // ---------------------------------------------------------------------------
 // Fetcher
 // ---------------------------------------------------------------------------
 
-async function fetchModels(): Promise<OpenRouterModel[]> {
-  const res = await fetch('/api/openrouter/models')
+async function fetchModels(apiKey?: string): Promise<OpenRouterModel[]> {
+  const url = apiKey
+    ? `/api/openrouter/models?apiKey=${encodeURIComponent(apiKey)}`
+    : '/api/openrouter/models'
+  const res = await fetch(url)
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
     throw new Error(
@@ -40,7 +43,6 @@ async function fetchModels(): Promise<OpenRouterModel[]> {
     )
   }
   const json = await res.json()
-  // Route may return { data: [...] } or a raw array
   return Array.isArray(json) ? json : (json.data ?? [])
 }
 
@@ -65,8 +67,8 @@ export function useOpenRouterModels(
   apiKey?: string
 ): UseOpenRouterModelsReturn {
   const { data, isLoading, error } = useQuery({
-    queryKey: openRouterKeys.models(),
-    queryFn: fetchModels,
+    queryKey: openRouterKeys.models(apiKey),
+    queryFn: () => fetchModels(apiKey),
     enabled: Boolean(apiKey),
     staleTime: 5 * 60 * 1_000, // 5 minutes
     retry: 2,

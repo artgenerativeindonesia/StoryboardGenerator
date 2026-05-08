@@ -45,18 +45,18 @@ LENS PROPERTIES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 CAMERA ANGLES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Eye Level    — Neutral, objective, relatable
-• Low Angle    — Subject appears powerful, imposing, heroic or threatening
-• High Angle   — Subject appears small, vulnerable, observed
-• Dutch Tilt   — Canted frame; unease, disorientation, psychological tension
-• Bird's Eye   — Directly overhead; omniscient, abstract, graphic
-• Worm's Eye   — Extreme low; exaggerated scale, raw power
+• Eye level    — Neutral, objective, relatable
+• Low angle    — Subject appears powerful, imposing, heroic or threatening
+• High angle   — Subject appears small, vulnerable, observed
+• Dutch tilt   — Canted frame; unease, disorientation, psychological tension
+• Bird's eye   — Directly overhead; omniscient, abstract, graphic
+• Worm's eye   — Extreme low; exaggerated scale, raw power
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 VIEW / ELEVATION LEVELS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • Ground       — Camera at or below ground plane
-• Eye Level    — Standing human height (~1.6 m)
+• Eye level    — Standing human height (~1.6 m)
 • Elevated     — Above eye level, below aerial (crane, high vantage point)
 • Aerial       — Drone / helicopter / very high crane
 
@@ -90,9 +90,9 @@ Return ONLY a valid JSON array. Each element must have exactly these keys:
   shot_number      — integer, sequential within the scene (reset to 1 each scene)
   composition      — string describing framing and subject placement
   shot_type        — one of: ECU | CU | MCU | MS | MWS | WS | EWS
-  shot_angle       — one of: Eye Level | Low Angle | High Angle | Dutch Tilt | Bird's Eye | Worm's Eye
-  view_level       — one of: Ground | Eye Level | Elevated | Aerial
-  lens_properties  — string describing focal length and optical characteristics
+  shot_angle       — one of: Eye level | Low angle | High angle | Dutch tilt | Bird's eye | Worm's eye
+  view_level       — one of: Ground | Eye level | Elevated | Aerial
+  lens_properties  — one of: 14mm | 24mm | 35mm | 50mm | 85mm | 135mm
   style            — string: cinematic style / DOP reference
   mood             — string: emotional tone and atmosphere
   scene_description — string: what is happening in this shot

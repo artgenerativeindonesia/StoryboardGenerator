@@ -46,8 +46,8 @@ export async function POST(
   let bodyFileIds: string[] | undefined
   try {
     const body = await request.json()
-    if (Array.isArray(body?.selectedFileIds)) {
-      bodyFileIds = body.selectedFileIds.filter((id: unknown): id is string => typeof id === 'string')
+    if (Array.isArray(body?.selected_file_ids)) {
+      bodyFileIds = body.selected_file_ids.filter((id: unknown): id is string => typeof id === 'string')
     }
   } catch {
     // No body or invalid JSON — use session defaults
